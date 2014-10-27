@@ -44,49 +44,38 @@ class DetailBehavior extends ModelBehavior {
 		// TODO
 		// get detail model name from the type's param info
 		if ($type != null) {
-			$dmName = $this->_getDetailAlias($type);
-			if (array_key_exists('contain',$query)) {
-				$query['contain'] = Hash::merge(array($dmName),$query['contain']);
-			} else {
-				$query['contain'] = array($dmName);
+			$dmName = $this->_getDetailModelName($type);
+			if ($dmName) {
+				if (array_key_exists('contain',$query)) {
+					$query['contain'] = Hash::merge(array($dmName),$query['contain']);
+				} else {
+					$query['contain'] = array($dmName);
+				}
 			}
 		}
-		//print_r($query);
 		return $query;
 	}
 
 	/**
-	 * _getDetailAlias
+	 * _getDetailModelName
 	 *
-	 * Look in the params of the node type to find the model property.
-	 * If nothing, just assume and use Inflector.
+	 * //Look in the params of the node type to find the model property.
+	 * //If nothing, just assume and use Inflector.
+	 * For now, just use Inflector.
 	 *
 	 * @param $type The Node type
 	 * @param @inclPlugin Include the plugin name, if provided.
 	 * @return The name of the associated detail model
 	 */
-	protected function _getDetailAlias($targetType, $inclPlugin = false) {
-		$types = ClassRegistry::init('Taxonomy.Type')->find('all', array(
-			'cache' => array(
-				'name' => 'types',
-				'config' => 'croogo_types',
+	protected function _getDetailModelName($targetType, $inclPlugin = false) {
+		$type = ClassRegistry::init('Taxonomy.Type')->find('first', array(
+			'conditions' => array(
+				'alias' => $targetType,
 			),
 		));
 		$alias = null;
-		foreach ($types as $type) {
-			$p = $type['Params'];
-			if (isset($p['detail']) && $p['detail']) {
-				if (isset($p['model']) && $p['model']) {
-					$alias = $p['model'];
-				}
-				//print_r($types);
-				if (!$inclPlugin) {
-					$ex = explode('.',$alias);
-					$alias = (count($ex) > 1) ? $alias = $ex[1] : $alias = $ex[0];
-				}
-				//print_r($alias);
-				break;
-			}
+		if (isset($type['Params']['detail'])) {
+			$alias = Inflector::classify($targetType) . 'Detail';
 		}
 		return $alias;
 	}

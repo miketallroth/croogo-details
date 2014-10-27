@@ -29,7 +29,7 @@
  */
 	foreach ($typeDefs as $typeDef) {
 		$p = $typeDef['Params'];
-		if (array_key_exists('detail',$p) && $p['detail']) {
+		if (isset($p['detail'])) {
 			$detailModelName = Inflector::classify($typeDef['Type']['alias']) . 'Detail';
 			Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
 				'className' => $detailModelName,
@@ -56,11 +56,11 @@
 	$types = array();
 	foreach ($typeDefs as $typeDef) {
 		$p = $typeDef['Params'];
-		if (array_key_exists('detail',$p) && $p['detail']) {
+		if (isset($p['detail'])) {
 			$types[] = $typeDef['Type']['alias'];
 		}
 	}
-	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Details.admin_tab_node_add', array('type'=>$types));
+	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 	Croogo::hookAdminTab('Nodes/admin_edit', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 
 	Croogo::hookAdminTab('Types/admin_add', 'Details', 'Details.admin_tab_type_add');
