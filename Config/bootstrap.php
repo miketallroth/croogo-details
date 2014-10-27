@@ -50,14 +50,18 @@
  * Admin tab
  *
  * When adding/editing Content (Nodes),
- * an extra tab with title 'Appointment' will be shown with markup generated
+ * An extra tab with title 'Details' will be shown with markup generated
  * from the plugin's admin_tab_node element.
- *
- * TODO Get this from the type's 'title' attribute.
  */
-	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Appointments.admin_tab_node_add', array('type'=>array('appointment')));
-	Croogo::hookAdminTab('Nodes/admin_edit', 'Details', 'Appointments.admin_tab_node', array('type'=>array('appointment')));
-
+	$types = array();
+	foreach ($typeDefs as $typeDef) {
+		$p = $typeDef['Params'];
+		if (array_key_exists('detail',$p) && $p['detail']) {
+			$types[] = $typeDef['Type']['alias'];
+		}
+	}
+	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Details.admin_tab_node_add', array('type'=>$types));
+	Croogo::hookAdminTab('Nodes/admin_edit', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 
 	Croogo::hookAdminTab('Types/admin_add', 'Details', 'Details.admin_tab_type_add');
 	Croogo::hookAdminTab('Types/admin_edit', 'Details', 'Details.admin_tab_type');
