@@ -1,0 +1,72 @@
+# Details
+
+**Details** is a plugin for the Croogo CMS used to manage custom fields in Nodes. It is released under [MIT License](LICENSE.txt).
+
+It is powered by the [Croogo](http://croogo.org) CMS framework.
+
+## Requirements
+	* Croogo 2.0.0+
+
+## Installation
+
+#### Web based installer
+
+	* Go to Admin > Extensions > Plugins.
+	* Upload the file using the Upload link.
+
+#### Manual installation
+
+	* Extract the archive to the app/Plugin/Details directory.
+
+#### Installation using git
+
+	* TBD
+
+#### Activation
+
+	* Go to Admin > Extensions > Plugins.
+	* Click on the activate icon to enable it.
+
+## Usage
+
+	* Currently, there is no admin side support. Coming soon.
+	* For now,
+		* Create a content type of your choosing, ie:
+			* title='Appointment',
+			* alias='appointment',
+			* Params tab
+				* routes=true
+				* detail=true
+			* Details tab - nothing working here yet
+		* Create a details table in your database, ie.
+			* CREATE TABLE `appointment_details` (
+			*	`id` int(10) NOT NULL AUTO_INCREMENT,
+			*	`node_id` int(10) DEFAULT NULL, 
+			*	`start_date` datetime DEFAULT NULL,
+			*	`end_date` datetime DEFAULT NULL,
+			*	`firm` tinyint(1) DEFAULT NULL,
+			*	PRIMARY KEY (`id`)
+			* )
+		* Create a new Node of your type, ie. Appointment
+			* Give it a title and a body, mark it Published.
+			* On Details tab, enter data, or leave blank if not using example schema.
+		* If not using example schema, then manually update content in database.
+		* Navigate to your custom type list, ie. http://my-site.com/appointment
+			* This type route should show a list of your content of this type with your custom fields.
+
+## Todo
+
+	* Complete admin side
+		* Complete content editor
+		* Complete content type editor
+	* Handle other types
+		* Url, Email, etc.
+		* Add customizable validation
+
+## Links
+
+	* TBD
+	* **Official website**: [https://github.com/miketallroth/croogo-details](https://github.com/miketallroth/croogo-details)
+	* **Downloads**: [https://github.com/miketallroth/croogo-details/archive/master.zip](https://github.com/miketallroth/croogo-details/archive/master.zip)
+	* **Issue Tracker**: [https://github.com/miketallroth/croogo-details/issues](https://github.com/miketallroth/croogo-details/issues)
+	* **Wiki**: [https://github.com/miketallroth/croogo-details/wiki](https://github.com/miketallroth/croogo-details/wiki)

@@ -1,0 +1,17 @@
+{
+	"name": "Details",
+	"description": "Nodes plugin for attaching custom fields to nodes",
+
+	"author": "Mike Tallroth",
+	"authorEmail": "mike.tallroth@gmail.com",
+	"authorUrl": "http://github.com/miketallroth",
+
+	"dependencies": {
+		"plugins": [
+			"acl",
+			"extensions",
+			"nodes",
+			"migrations"
+		]
+	}
+}

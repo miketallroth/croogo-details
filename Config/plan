@@ -1,0 +1,35 @@
+Create types
+	params
+		routes=true
+		extended=true
+		model=Appointments.AppointmentDetail
+		plugin=
+		behavior=Appointments.Appointment
+
+Run Migration
+
+config											data source
+------											-----------
+	hookRoutes(<type>)							Type->find
+	hookBehavior('Node', <Plugin>.<Behavior>)   Type->find
+	hookModelProperty('Node', ... <Model>)		Type->find
+	hookHelper('Nodes', <Plugin>.<Helper>)		Type->find
+	hookAdminTab('Nodes', <Type>, <alias>)		Type->find
+
+
+
+Notes:
+------
+1)	Make individual plugins (if necessary) NOT dependent upon Details plugin
+	(chicken and egg, we need Custom plugins first before we activate Details)
+
+2)	Must handle cases where custom behavior is needed, and cases where its not.
+	Hopefully DetailBehavior is enough for all custom types.
+
+3)	Must handle cases where custom helper is needed, and cases where its not.
+	Same as above. Auto sensing field types should handle a lot of cases.
+
+4)	Need a title for admin tab. When editing a type, the first (default) tab
+	gets the name of the type (ie. Blog), so you shouldn't create a new tab
+	with the same type name. Maybe 'Expanded', or 'Extended' or something
+	like that.
