@@ -62,6 +62,7 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
 
   * Complete admin side
     * Complete content type editor
+    * Add setting to disable default Helper listener
   * Handle other types
     * Url, Email, etc.
     * Add customizable validation
