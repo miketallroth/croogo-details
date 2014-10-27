@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Get all types to search for types with Detail
+ */
+	$typeDefs = ClassRegistry::init('Taxonomy.Type')->find('all');
+
+/**
  * Routes
  *
  * Plugin/Details/Config/routes.php will be loaded
@@ -22,12 +27,17 @@
  *
  * Now, Node hasOne Appt. Dependent so deletes work.
  */
-	Croogo::hookModelProperty('Node', 'hasOne', array('AppointmentDetail' => array(
-		//'className' => 'Appointments.AppointmentDetail',
-		'className' => 'AppointmentDetail',
-		'foreignKey' => 'node_id',
-		'dependent' => true,
-	)));
+	foreach ($typeDefs as $typeDef) {
+		$p = $typeDef['Params'];
+		if (array_key_exists('detail',$p) && $p['detail']) {
+			$detailModelName = Inflector::classify($typeDef['Type']['alias']) . 'Detail';
+			Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
+				'className' => $detailModelName,
+				'foreignKey' => 'node_id',
+				'dependent' => true,
+			)));
+		}
+	}
 
 /**
  * Helper
