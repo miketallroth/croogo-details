@@ -72,14 +72,13 @@ class DetailsEventHandler implements CakeEventListener {
 
 		$detailModelName = Inflector::classify($type) . 'Detail';
 		$detailFields = ClassRegistry::init($detailModelName)->schema();
-		$extra = '';
+		$extra = '<dl class="' . $type . '-detail">';
 		foreach ($detailFields as $fieldName => $meta) {
 			if ($fieldName == 'id' || $fieldName == 'node_id') {
 				continue;
 			}
 			$field = $Layout->node[$detailModelName][$fieldName];
-			$extra .= '<div class="' . $type . '-detail">';
-			$extra .= Inflector::humanize($fieldName) . ': ';
+			$extra .= '<dt>' . Inflector::humanize($fieldName) . '</dt><dd>';
 			switch ($meta['type']) {
 			case 'datetime':
 				if(!empty($field)) {
@@ -94,8 +93,9 @@ class DetailsEventHandler implements CakeEventListener {
 			default:
 				$extra .= $field;
 			}
-			$extra .= '</div>';
+			$extra .= '</dd>';
 		}
+		$extra .= '</dl>';
 
 		$modifiedBody = $Layout->node('body') . $extra;
 		$event->subject->Layout->setNodeField('body',$modifiedBody);
