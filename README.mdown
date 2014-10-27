@@ -38,15 +38,20 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
         * routes=true
         * detail=true
       * Details tab - nothing working here yet
-    * Create a details table in your database, ie.
-	CREATE TABLE `appointment_details` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`node_id` int(10) DEFAULT NULL, 
-		`start_date` datetime DEFAULT NULL,
-		`end_date` datetime DEFAULT NULL,
-		`firm` tinyint(1) DEFAULT NULL,
-		PRIMARY KEY (`id`)
-	)
+    * Create a details table in your database with an id, a node_id, and any other fields you want to track, ie.
+
+```
+        CREATE TABLE `appointment_details` (
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `node_id` int(10) DEFAULT NULL, 
+            `start_date` datetime DEFAULT NULL,
+            `end_date` datetime DEFAULT NULL,
+            `firm` tinyint(1) DEFAULT NULL,
+            PRIMARY KEY (`id`)
+        )
+```
+
+  * Continuing on,
     * Create a new Node of your type, ie. Appointment
       * Give it a title and a body, mark it Published.
       * On Details tab, enter custom data.
