@@ -51,7 +51,7 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
         )
 ```
 
-  * Continuing on,
+  * Once your content type and database are in place,
     * Create a new Node of your type, ie. Appointment
       * Give it a title and a body, mark it Published.
       * On Details tab, enter custom data.
