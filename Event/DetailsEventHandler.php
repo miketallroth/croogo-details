@@ -71,34 +71,36 @@ class DetailsEventHandler implements CakeEventListener {
 		}
 
 		$detailModelName = Inflector::classify($type) . 'Detail';
-		$detailFields = ClassRegistry::init($detailModelName)->schema();
-		$extra = '<dl class="' . $type . '-detail">';
-		foreach ($detailFields as $fieldName => $meta) {
-			if ($fieldName == 'id' || $fieldName == 'node_id') {
-				continue;
-			}
-			$field = $Layout->node[$detailModelName][$fieldName];
-			$extra .= '<dt>' . Inflector::humanize($fieldName) . '</dt><dd>';
-			switch ($meta['type']) {
-			case 'datetime':
-				if(!empty($field)) {
-					$dateFormat = Configure::read('Reading.date_time_format');
-					$extra .= date($dateFormat, strtotime($field));
+		if (isset($Layout->node[$detailModelName])) {
+			$detailFields = ClassRegistry::init($detailModelName)->schema();
+			$extra = '<dl class="' . $type . '-detail">';
+			foreach ($detailFields as $fieldName => $meta) {
+				if ($fieldName == 'id' || $fieldName == 'node_id') {
+					continue;
 				}
-				break;
-			case 'boolean':
-				$extra .= $field ? 'true' : 'false';
-				break;
-			case 'integer':
-			default:
-				$extra .= $field;
+				$field = $Layout->node[$detailModelName][$fieldName];
+				$extra .= '<dt>' . Inflector::humanize($fieldName) . '</dt><dd>';
+				switch ($meta['type']) {
+				case 'datetime':
+					if(!empty($field)) {
+						$dateFormat = Configure::read('Reading.date_time_format');
+						$extra .= date($dateFormat, strtotime($field));
+					}
+					break;
+				case 'boolean':
+					$extra .= $field ? 'true' : 'false';
+					break;
+				case 'integer':
+				default:
+					$extra .= $field;
+				}
+				$extra .= '</dd>';
 			}
-			$extra .= '</dd>';
-		}
-		$extra .= '</dl>';
+			$extra .= '</dl>';
 
-		$modifiedBody = $Layout->node('body') . $extra;
-		$event->subject->Layout->setNodeField('body',$modifiedBody);
+			$modifiedBody = $Layout->node('body') . $extra;
+			$event->subject->Layout->setNodeField('body',$modifiedBody);
+		}
 	}
 
 }
