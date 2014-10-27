@@ -29,7 +29,7 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
 
 ## Usage
 
-	* Currently, there is no admin side support. Coming soon.
+	* Currently, there is little admin side support. More coming soon.
 	* For now,
 		* Create a content type of your choosing, ie:
 			* title='Appointment',
@@ -49,15 +49,13 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
 			* )
 		* Create a new Node of your type, ie. Appointment
 			* Give it a title and a body, mark it Published.
-			* On Details tab, enter data, or leave blank if not using example schema.
-		* If not using example schema, then manually update content in database.
+			* On Details tab, enter custom data.
 		* Navigate to your custom type list, ie. http://my-site.com/appointment
 			* This type route should show a list of your content of this type with your custom fields.
 
 ## Todo
 
 	* Complete admin side
-		* Complete content editor
 		* Complete content type editor
 	* Handle other types
 		* Url, Email, etc.
