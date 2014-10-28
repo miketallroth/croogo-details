@@ -13,7 +13,7 @@
 
 	echo $this->Html->link(
 		__d('croogo','Add another field'),
-		array('plugin'=>'details', 'controller'=>'details', 'action'=>'add_field'),
-		array('class'=>'add-field')
+		array('plugin'=>'details', 'controller'=>'details', 'action'=>'add_detail'),
+		array('class'=>'add-detail')
 	);
 ?>

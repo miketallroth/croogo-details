@@ -67,7 +67,7 @@ class DetailsController extends DetailsAppController {
  * @return void
  * @access public
  */
-	public function admin_add_field() {
+	public function admin_add_detail() {
 		$this->layout = 'ajax';
 	}
 
