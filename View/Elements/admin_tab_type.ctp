@@ -1,6 +1,6 @@
 <?php
-	$this->Html->script(array('/event/js/jquery.datetimepicker'), array('inline'=>false));
-	$this->Html->css(array('/event/css/theme'), null, array('inline'=>false));
+	$this->Html->script(array('/details/js/jquery.datetimepicker'), array('inline'=>false));
+	$this->Html->css(array('/details/css/theme'), null, array('inline'=>false));
 
 	echo "<div>TODO: genericize Details/View/Elements/admin_tab* to be usable for all attribute types</div>";
 
