@@ -45,6 +45,7 @@
  * Adjust output values prior to display.
  */
 	Croogo::hookHelper('Nodes', 'Details.Details');
+	Croogo::hookHelper('Types', 'Details.Details');
 
 /**
  * Admin tab
@@ -63,5 +64,6 @@
 	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 	Croogo::hookAdminTab('Nodes/admin_edit', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 
-	Croogo::hookAdminTab('Types/admin_add', 'Details', 'Details.admin_tab_type_add');
+	Croogo::hookAdminTab('Types/admin_add', 'Details', 'Details.admin_tab_type');
 	Croogo::hookAdminTab('Types/admin_edit', 'Details', 'Details.admin_tab_type');
+	Croogo::hookAdminBox('Types/admin_edit', 'Details', 'Details.admin_tab_type');

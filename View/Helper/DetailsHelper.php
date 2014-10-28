@@ -21,7 +21,26 @@ class DetailsHelper extends AppHelper {
 	public $helpers = array(
 		'Html',
 		'Layout',
+        'Form',
 	);
+
+    public $settings = array(
+        'deleteUrl' => array(
+            'admin' => true, 'plugin' => 'details',
+            'controller' => 'details', 'action' => 'delete_detail',
+        ),
+    );
+
+/**
+ * beforeRender
+ */
+	public function beforeRender($viewFile) {
+		if ($this->_View->Layout->isLoggedIn()) {
+			return $this->_View->Croogo->adminScript('Details.admin');
+		}
+	}
+
+
 /**
  * Called before LayoutHelper::nodeBody()
  * 
@@ -54,56 +73,71 @@ class DetailsHelper extends AppHelper {
 	 */
 
 /**
- * Details field: with key/value fields
+ * Details field: with name/type fields
  *
- * @param string $key (optional) key
- * @param string $value (optional) value
- * @param integer $id (optional) ID of Meta
+ * @param string $colName (optional) column name
+ * @param string $colType (optional) column type
  * @param array $options (optional) options
  * @return string
+ *
+ * column types from MySQL
+ *     'string'        // 255
+ *     'text'          // over 255
+ *     'biginteger'    // 12 to 20
+ *     'integer'       // 11 or less
+ *     'float'         // float
+ *     'decimal'       // float
+ *     'datetime'      // datetime Y-m-d H:i:s
+ *     'timestamp'     // datetime Y-m-d H:i:s
+ *     'time'          // time H:i:s
+ *     'date'          // date Y-m-d
+ *     'binary'        // blob
+ *     'boolean'       // 1 bit
+ *
  */
-    public function field($key = '', $value = null, $id = null, $options = array()) {
+    public function field($colName = '', $colType = null, $options = array()) {
         $inputClass = $this->Layout->cssClass('formInput');
+        $_types = array(
+            'string', 'text', 'biginteger', 'integer', 'float',
+            'decimal', 'datetime', 'time', 'date', 'binary', 'boolean',
+        );
+        $_types = Hash::combine($_types, '{n}', '{n}');
         $_options = array(
-            'key' => array(
-                'label' => __d('croogo', 'Key'),
-                'value' => $key,
+            'colName' => array(
+                'label' => __d('croogo', 'Column Name'),
+                'value' => $colName,
             ),
-            'value' => array(
-                'label' => __d('croogo', 'Value'),
-                'value' => $value,
-                'type' => 'textarea',
-                'rows' => 2,
+            'colType' => array(
+                'label' => __d('croogo', 'Column Type'),
+                'value' => $colType,
+                'type' => 'select',
+                'options' => $_types,
             ),
         );
+
         if ($inputClass) {
-            $_options['key']['class'] = $_options['value']['class'] = $inputClass;
+            $_options['colName']['class'] = $_options['colType']['class'] = $inputClass;
         }
         $options = Hash::merge($_options, $options);
         $uuid = String::uuid();
 
         $fields = '';
-        if ($id != null) {
-            $fields .= $this->Form->input('Meta.' . $uuid . '.id', array('type' => 'hidden', 'value' => $id));
-            $this->Form->unlockField('Meta.' . $uuid . '.id');
-        }
-        $fields .= $this->Form->input('Meta.' . $uuid . '.key', $options['key']);
-        $fields .= $this->Form->input('Meta.' . $uuid . '.value', $options['value']);
-        $this->Form->unlockField('Meta.' . $uuid . '.key');
-        $this->Form->unlockField('Meta.' . $uuid . '.value');
+        $fields .= $this->Form->input('Detail.' . $uuid . '.colName', $options['colName']);
+        $fields .= $this->Form->input('Detail.' . $uuid . '.colType', $options['colType']);
+        $this->Form->unlockField('Detail.' . $uuid . '.colName');
+        $this->Form->unlockField('Detail.' . $uuid . '.colType');
         $fields = $this->Html->tag('div', $fields, array('class' => 'fields'));
 
-        $id = is_null($id) ? $uuid : $id;
         $deleteUrl = $this->settings['deleteUrl'];
-        $deleteUrl[] = $id;
+        $deleteUrl[] = $uuid;
         $actions = $this->Html->link(
             __d('croogo', 'Remove'),
             $deleteUrl,
-            array('class' => 'remove-meta', 'rel' => $id)
+            array('class' => 'remove-detail', 'rel' => $uuid)
         );
         $actions = $this->Html->tag('div', $actions, array('class' => 'actions'));
 
-        $output = $this->Html->tag('div', $actions . $fields, array('class' => 'meta'));
+        $output = $this->Html->tag('div', $actions . $fields, array('class' => 'detail'));
         return $output;
     }
 
