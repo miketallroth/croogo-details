@@ -5,6 +5,20 @@
  */
 	$typeDefs = ClassRegistry::init('Taxonomy.Type')->find('all');
 
+	foreach ($typeDefs as $index => $typeDef) {
+		foreach ($typeDef['Params'] as $key => $value) {
+			if (is_string($value)) {
+				$num_check = filter_var($value, FILTER_VALIDATE_INT, array('flags'=>FILTER_FLAG_ALLOW_HEX));
+				$bool_check = filter_var($value, FILTER_VALIDATE_BOOLEAN, array('flags'=>FILTER_NULL_ON_FAILURE));
+				if ($num_check !== false) {
+					$typeDefs[$index]['Params'][$key] = $num_check;
+				} else if (!is_null($bool_check)) {
+					$typeDefs[$index]['Params'][$key] = $bool_check;
+				}
+			}
+		}
+	}
+
 /**
  * Routes
  *

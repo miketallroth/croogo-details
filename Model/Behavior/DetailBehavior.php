@@ -1,4 +1,7 @@
 <?php
+
+App::uses('DetailsUtility', 'Details.Lib');
+
 /**
  * Detail Behavior
  *
@@ -73,8 +76,11 @@ class DetailBehavior extends ModelBehavior {
 				'alias' => $targetType,
 			),
 		));
+
 		$alias = null;
-		if (isset($type['Params']['detail'])) {
+		$type['Params'] = DetailsUtility::convertTypes($type['Params']);
+		$p = (isset($type['Params']['detail'])) ? $type['Params']['detail'] : false;
+		if ($p) {
 			$alias = Inflector::classify($targetType) . 'Detail';
 		}
 		return $alias;

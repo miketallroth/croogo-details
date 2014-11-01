@@ -1,31 +1,14 @@
 <?php
 
-//$this->extend('/Common/admin_edit');
-
     $d = $this->request->data;
+	$d['Params'] = DetailsUtility::convertTypes($d['Params']);
     $t = isset($d['Type']['alias']) ? $d['Type']['alias'] : false;
     $p = isset($d['Params']['detail']) ? $d['Params']['detail'] : false;
-    //print_r($d);
-    /*
-    $x = $d['Params']['detail'];
-    echo '::';
-    echo $x;
-    echo ',';
-    echo is_null($x) ? 'is null' : 'not null';
-    echo ',';
-    echo is_string($x) ? 'is string' : 'not string';
-    echo ',';
-    echo is_numeric($x) ? 'is numeric' : 'not numeric';
-    echo ',';
-    echo is_bool($x) ? 'is boolean' : 'not boolean';
-    echo ',';
-    echo ($x) ? 'true' : 'false';
-    echo '::';
-     */
 
     if ($t && $p) {
         $detailModelName = Inflector::classify($t) . 'Detail';
         $detailFields = ClassRegistry::init($detailModelName)->schema();
+    	$typeId = $d['Type']['id'];
 
         $jsReady = '';
 
@@ -56,19 +39,19 @@
             echo '<td><div class="item-actions">';
 
             echo $this->Croogo->adminRowAction('',
-                array('plugin' => 'details', 'controller' => 'details', 'action' => 'moveup', $fieldName),
+                array('admin' => true, 'plugin' => 'details', 'controller' => 'details', 'action' => 'moveup', $typeId, $fieldName),
                 array('icon' => $_icons['move-up'], 'tooltip' => __d('croogo', 'Move up'))
             );
             echo $this->Croogo->adminRowAction('',
-                array('plugin' => 'details', 'controller' => 'details', 'action' => 'movedown', $fieldName),
+                array('plugin' => 'details', 'controller' => 'details', 'action' => 'movedown', $typeId, $fieldName),
                 array('icon' => $_icons['move-down'], 'tooltip' => __d('croogo', 'Move down'))
             );
             echo $this->Croogo->adminRowAction('',
-                array('plugin' => 'details', 'controller' => 'details', 'action' => 'edit', $fieldName),
+                array('plugin' => 'details', 'controller' => 'details', 'action' => 'edit', $typeId, $fieldName),
                 array('icon' => $_icons['update'], 'tooltip' => __d('croogo', 'Edit this item'))
             );
             echo ' ' . $this->Croogo->adminRowAction('',
-                '#Detail' . $fieldName,
+				array('plugin' => 'details', 'controller' => 'details', 'action' => 'delete', $typeId, $fieldName),
                 array(
                     'icon' => $_icons['delete'],
                     'class' => 'delete',
@@ -83,7 +66,7 @@
 
 	    echo $this->Html->link(
 		    __d('croogo','Add another field'),
-		    array('plugin'=>'details', 'controller'=>'details', 'action'=>'add_field'),
+		    array('plugin'=>'details', 'controller'=>'details', 'action'=>'add_field', $typeId),
 		    array('class'=>'add-field')
 	    );
     }
