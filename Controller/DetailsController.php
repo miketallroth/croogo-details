@@ -81,6 +81,12 @@ class DetailsController extends DetailsAppController {
  */
 	public function admin_moveup($typeId = null, $name = null) {
 
+		// check for invalid typeId
+		if (empty($typeId)) {
+			$this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
+
 		// get the type meta data
 		list($Detail, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
 
@@ -129,6 +135,12 @@ class DetailsController extends DetailsAppController {
  * @access public
  */
 	public function admin_movedown($typeId = null, $name = null) {
+
+		// check for invalid typeId
+		if (empty($typeId)) {
+			$this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
 
 		// get the type meta data
 		list($Detail, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
