@@ -51,7 +51,7 @@
                 array('icon' => $_icons['update'], 'tooltip' => __d('croogo', 'Edit this item'))
             );
             echo ' ' . $this->Croogo->adminRowAction('',
-				array('plugin' => 'details', 'controller' => 'details', 'action' => 'delete', $typeId, $fieldName),
+				array('plugin' => 'details', 'controller' => 'details', 'action' => 'delete_field', $typeId, $fieldName),
                 array(
                     'icon' => $_icons['delete'],
                     'class' => 'delete',
@@ -66,10 +66,8 @@
 
 	    echo $this->Html->link(
 		    __d('croogo','Add another field'),
-		    array('plugin'=>'details', 'controller'=>'details', 'action'=>'add_field', $typeId),
-		    array('class'=>'add-field')
+		    array('plugin'=>'details', 'controller'=>'details', 'action'=>'add', $typeId),
+		    array('class'=>'add')
 	    );
     }
 ?>
-
-

@@ -39,36 +39,79 @@ class DetailsController extends DetailsAppController {
 	public $presetVars = true;
 
 /**
- * Admin delete field
- *
- * @param integer $id
- * @return void
- * @access public
- */
-	public function admin_delete_field($id = null) {
-		$Meta = ClassRegistry::init('Meta.Meta');
-		$success = false;
-		if ($id != null && $Meta->delete($id)) {
-			$success = true;
-		} else {
-			if (!$Meta->exists($id)) {
-				$success = true;
-			}
-		}
-
-		$success = array('success' => $success);
-		$this->set(compact('success'));
-		$this->set('_serialize', 'success');
-	}
-
-/**
  * Admin add field
  *
  * @return void
  * @access public
  */
-	public function admin_add_field() {
-		$this->layout = 'ajax';
+	public function admin_add($typeId = null) {
+        $this->set('title_for_layout', __d('croogo', 'Add Field'));
+
+		// set the redirect array
+		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
+
+		// check for invalid typeId
+		if (empty($typeId)) {
+			$this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
+
+		// get the type meta data
+		list($Detail, $typeName, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
+
+		if (!empty($this->request->data)) {
+
+			$colDef = $this->_makeSqlDef($this->request->data['Type']);
+			$Detail->query("ALTER TABLE {$tableName} ADD {$this->request->data['Type']['name']} {$colDef}");
+
+			$this->Session->setFlash(__d('croogo', 'The Detail Field has been added'), 'flash', array('class' => 'success'));
+			$this->redirect(array('plugin'=>'taxonomy', 'controller'=>'types', 'action' => 'edit', $typeId));
+		}
+
+		$this->set('typeName', $typeName);
+		$this->set('typeId', $typeId);
+	}
+
+/**
+ * Admin edit field
+ *
+ * @return void
+ * @access public
+ */
+	public function admin_edit($typeId = null, $name = null) {
+        $this->set('title_for_layout', __d('croogo', 'Edit Field'));
+
+		// set the redirect array
+		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
+
+		// check for invalid typeId
+		if (empty($typeId) || empty($name)) {
+			$this->Session->setFlash(__d('croogo', 'Type or field not recognized'), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
+
+		// get the type meta data
+		list($Detail, $typeName, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
+		CakeLog::write('debug',print_r($detailFields,true));
+
+		if (!empty($this->request->data)) {
+			$old_name = $name;
+			$new_name = $this->request->data['Type']['name'];
+			$colDef = $this->_makeSqlDef($this->request->data['Type']);
+
+			$query = "ALTER TABLE {$tableName} CHANGE {$old_name} {$new_name} {$colDef}";
+			CakeLog::write('debug',$query);
+			$Detail->query("ALTER TABLE {$tableName} CHANGE {$old_name} {$new_name} {$colDef}");
+
+			$this->Session->setFlash(__d('croogo', 'The Detail Field has been changed'), 'flash', array('class' => 'success'));
+			$this->redirect(array('plugin'=>'taxonomy', 'controller'=>'types', 'action' => 'edit', $typeId));
+		} else {
+			$detailFields[$name]['name'] = $name;
+			$this->request->data['Type'] = $detailFields[$name];
+		}
+
+		$this->set('typeName', $typeName);
+		$this->set('typeId', $typeId);
 	}
 
 /**
@@ -81,6 +124,9 @@ class DetailsController extends DetailsAppController {
  */
 	public function admin_moveup($typeId = null, $name = null) {
 
+		// set the redirect array
+		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
+
 		// check for invalid typeId
 		if (empty($typeId)) {
 			$this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
@@ -88,7 +134,7 @@ class DetailsController extends DetailsAppController {
 		}
 
 		// get the type meta data
-		list($Detail, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
+		list($Detail, $typeName, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
 
 		// create a map to find the field two above
 		$mapKeys = array_keys($detailFields);
@@ -97,9 +143,6 @@ class DetailsController extends DetailsAppController {
 		$slice2 = array_slice($mapKeys, 2);
 		$mapKeys = array_merge($slice2, $slice1);
 		$map = array_combine($mapKeys, $mapValues);
-
-		// set the redirect array
-		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
 
 		// check for invalid field name
 		if (empty($name) || !isset($map[$name])) {
@@ -136,6 +179,9 @@ class DetailsController extends DetailsAppController {
  */
 	public function admin_movedown($typeId = null, $name = null) {
 
+		// set the redirect array
+		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
+
 		// check for invalid typeId
 		if (empty($typeId)) {
 			$this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
@@ -143,7 +189,7 @@ class DetailsController extends DetailsAppController {
 		}
 
 		// get the type meta data
-		list($Detail, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
+		list($Detail, $typeName, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
 
 		// create a map to find the field one below
 		$mapKeys = array_keys($detailFields);
@@ -152,9 +198,6 @@ class DetailsController extends DetailsAppController {
 		$slice2 = array_slice($mapKeys, count($mapKeys)-1, 1);
 		$mapKeys = array_merge($slice2, $slice1);
 		$map = array_combine($mapKeys, $mapValues);
-
-		// set the redirect array
-		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
 
 		// check for invalid field name
 		if (empty($name) || !isset($map[$name])) {
@@ -181,6 +224,39 @@ class DetailsController extends DetailsAppController {
 		$this->redirect($redir);
 	}
 
+/**
+ * Admin delete_field
+ *
+ * @param integer $id
+ * @return void
+ * @access public
+ */
+    public function admin_delete_field($typeId = null, $name = null) {
+
+		// set the redirect array
+		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
+
+		// check for invalid typeId
+		if (empty($typeId)) {
+            $this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
+            return $this->redirect($redir);
+        }
+
+		// get the type meta data
+		list($Detail, $typeName, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
+
+		// check for invalid field name
+		if (empty($name) || !isset($detailFields[$name])) {
+			$this->Session->setFlash(__d('croogo', 'Field not recognized'), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
+
+		$Detail->query("ALTER TABLE {$tableName} DROP {$name}");
+        $this->Session->setFlash(__d('croogo', 'Field deleted'), 'flash', array('class' => 'success'));
+        return $this->redirect($redir);
+    }
+
+
 	/**
 	 * _getTypeInfo
 	 *
@@ -193,13 +269,14 @@ class DetailsController extends DetailsAppController {
 				'Type.id' => $typeId,
 			),
 		));
-		$className = Inflector::classify($typeDef['Type']['alias']) . 'Detail';
+		$typeName = Inflector::classify($typeDef['Type']['alias']);
+		$className = $typeName . 'Detail';
 		$tableName = Inflector::tableize($className);
 
 		// find details table meta information
 		$Detail = ClassRegistry::init($className);
 		$detailFields = $Detail->schema();
-		return array($Detail, $className, $tableName, $detailFields);
+		return array($Detail, $typeName, $className, $tableName, $detailFields);
 	}
 
 
@@ -222,7 +299,7 @@ class DetailsController extends DetailsAppController {
 
 		$def = $meta['type'];
 		$def .= ($meta['null']) ? ' null' : ' not null';
-		$def .= ' default' . (!is_null($meta['default'])) ? $meta['default'] : ' null';
+		$def .= ' default ' . ($meta['default'] === 'null') ? ' null' : "'{$meta['default']}'";
 
 		return $def;
 	}
