@@ -57,15 +57,15 @@
 				$tables = Hash::extract($tables, '{n}.TABLE_NAMES.Tables_in_slagit');
 				if (!in_array($tableName, $tables)) {
 					$Type->query("CREATE TABLE {$tableName} (`id` int(10) not null auto_increment, `node_id` int(10) default null, primary key (`id`))");
-					$Setting = ClassRegistry::init('Settings.Setting');
-					$setting = $Setting->find('first', array(
-						'conditions' => array(
-							'key' => 'Details.tables',
-						),
-					));
-					$setting['Setting']['value'] .= "{$detailModelName},";
-					$Setting->save($setting);
 				}
+				$Setting = ClassRegistry::init('Settings.Setting');
+				$setting = $Setting->find('first', array(
+					'conditions' => array(
+						'key' => 'Details.tables',
+					),
+				));
+				$setting['Setting']['value'] .= "{$detailModelName},";
+				$Setting->save($setting);
 			}
 
 			Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
