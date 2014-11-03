@@ -11,11 +11,26 @@
  */
 class DetailsActivation {
 
+	const TABLES_CONFIG_OPTION = 'Details.tables';
+	const TABLES_TITLE = 'Details Tables';
+	const TABLES_DESC = 'Details tables existing in database';
+
 	public function beforeActivation(Controller $controller) {
 		return true;
 	}
 
 	public function onActivation(Controller $controller) {
+		$controller->Setting->create();
+		$controller->Setting->save(array(
+			'key' => self::TABLES_CONFIG_OPTION,
+			'value' => '',
+			'title' => self::TABLES_TITLE,
+			'description' => self::TABLES_DESC,
+			'input_type' => 'text',
+			'editable' => 1,
+			'weight' => 100,
+			'params' => '',
+		));
 	}
 
 	public function beforeDeactivation(Controller $controller) {

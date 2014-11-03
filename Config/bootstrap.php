@@ -3,7 +3,8 @@
 /**
  * Get all types to search for types with Detail
  */
-	$typeDefs = ClassRegistry::init('Taxonomy.Type')->find('all');
+	$Type = ClassRegistry::init('Taxonomy.Type');
+	$typeDefs = $Type->find('all');
 
 	foreach ($typeDefs as $index => $typeDef) {
 		foreach ($typeDef['Params'] as $key => $value) {
@@ -44,7 +45,29 @@
 	foreach ($typeDefs as $typeDef) {
 		$p = $typeDef['Params'];
 		if (isset($p['detail'])) {
+
 			$detailModelName = Inflector::classify($typeDef['Type']['alias']) . 'Detail';
+			$dt = Configure::read('Details.tables');
+
+			// Create any details tables that don't exist
+			if (strpos($dt, $detailModelName) === false) {
+				$tableName = Inflector::tableize($detailModelName);
+
+				$tables = $Type->query('show tables');
+				$tables = Hash::extract($tables, '{n}.TABLE_NAMES.Tables_in_slagit');
+				if (!in_array($tableName, $tables)) {
+					$Type->query("CREATE TABLE {$tableName} (`id` int(10) not null auto_increment, `node_id` int(10) default null, primary key (`id`))");
+					$Setting = ClassRegistry::init('Settings.Setting');
+					$setting = $Setting->find('first', array(
+						'conditions' => array(
+							'key' => 'Details.tables',
+						),
+					));
+					$setting['Setting']['value'] .= "{$detailModelName},";
+					$Setting->save($setting);
+				}
+			}
+
 			Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
 				'className' => $detailModelName,
 				'foreignKey' => 'node_id',
