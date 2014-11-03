@@ -29,16 +29,37 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
 
 ## Usage
 
-  * Currently, there is little admin side support. More coming soon.
-  * For now,
-    * Create a content type of your choosing, ie:
-      * title='Appointment',
-      * alias='appointment',
-      * Params tab
-        * routes=true
-        * detail=true
-      * Details tab - nothing working here yet
-    * Create a details table in your database with an id, a node_id, and any other fields you want to track, ie.
+  * On type-editor-box branch:
+    * First try at admin side support. No need to create your database table manually. Please provide feedback.
+    * Process
+      * Create a content type of your choosing, ie:
+        * title='Appointment',
+        * alias='appointment',
+        * Params tab
+          * routes=true
+          * detail=true
+      * Click Save
+      * Edit your new content type and find the Details tab under the Publishing tab
+        * Add fields as desired, ie:
+          * start_date, datetime
+          * end_date, datetime
+      * Create a new Node of your type, ie. Appointment
+        * Give it a title, and a body, mark it Published.
+        * On Details tab, enter custom data.
+      * Navigate to your custom type list, ie. http://my-site.com/appointment
+        * This type route should show a list of your content of this type with your custom fields.
+
+  * On master branch:
+    * Currently, there is little admin side support. More coming soon.
+    * For now,
+      * Create a content type of your choosing, ie:
+        * title='Appointment',
+        * alias='appointment',
+        * Params tab
+          * routes=true
+          * detail=true
+        * Details tab - nothing working here yet
+      * Create a details table in your database with an id, a node_id, and any other fields you want to track, ie.
 
 ```
         CREATE TABLE `appointment_details` (
@@ -51,17 +72,17 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
         )
 ```
 
-  * Once your content type and database are in place,
-    * Create a new Node of your type, ie. Appointment
-      * Give it a title and a body, mark it Published.
-      * On Details tab, enter custom data.
-    * Navigate to your custom type list, ie. http://my-site.com/appointment
-      * This type route should show a list of your content of this type with your custom fields.
+    * Once your content type and database are in place,
+      * Create a new Node of your type, ie. Appointment
+        * Give it a title and a body, mark it Published.
+        * On Details tab, enter custom data.
+      * Navigate to your custom type list, ie. http://my-site.com/appointment
+        * This type route should show a list of your content of this type with your custom fields.
 
 ## Todo
 
   * Complete admin side
-    * Complete content type editor
+    * Handle custom models/views/controllers, etc
     * Add setting to disable default Helper listener
   * Handle other types
     * Url, Email, etc.
