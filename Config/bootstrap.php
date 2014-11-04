@@ -3,6 +3,10 @@
 /**
  * Get all types to search for types with Detail
  */
+	Croogo::hookBehavior('Type', 'Details.DetailType', array(
+		//'priority' => 1,
+	));
+
 	$Type = ClassRegistry::init('Taxonomy.Type');
 	$typeDefs = $Type->find('all');
 
@@ -36,6 +40,11 @@
 	Croogo::hookBehavior('Node', 'Details.Detail', array(
 		'priority' => 1,
 	));
+	/*
+	Croogo::hookBehavior('Taxonomy.Type', 'Details.DetailType', array(
+		'priority' => 1,
+	));
+	 */
 
 /**
  * hasOne relationship
