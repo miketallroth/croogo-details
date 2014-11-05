@@ -1,6 +1,13 @@
 <?php
 CakeLog::write('debug',print_r($this->request->data,true));
 
+$this->append('buttons',
+	$this->Html->beginBox(__d('croogo', 'Publishing')) .
+	$this->Form->button(__d('croogo', 'Save'), array('button' => 'primary')) .
+	$this->Html->link(__d('croogo', 'Cancel'), array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId), array('button'   => 'danger')) .
+	$this->Html->endBox()
+);
+
 $this->extend('/Common/admin_edit');
 
 $this->Html->addCrumb('', '/admin', array('icon' => $_icons['home']))
