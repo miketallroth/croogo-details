@@ -62,50 +62,50 @@ class DetailsHelper extends AppHelper {
  * @param array $options (optional) options
  * @return string
  */
-    public function field($key = '', $value = null, $id = null, $options = array()) {
-        $inputClass = $this->Layout->cssClass('formInput');
-        $_options = array(
-            'key' => array(
-                'label' => __d('croogo', 'Key'),
-                'value' => $key,
-            ),
-            'value' => array(
-                'label' => __d('croogo', 'Value'),
-                'value' => $value,
-                'type' => 'textarea',
-                'rows' => 2,
-            ),
-        );
-        if ($inputClass) {
-            $_options['key']['class'] = $_options['value']['class'] = $inputClass;
-        }
-        $options = Hash::merge($_options, $options);
-        $uuid = String::uuid();
+	public function field($key = '', $value = null, $id = null, $options = array()) {
+		$inputClass = $this->Layout->cssClass('formInput');
+		$_options = array(
+			'key' => array(
+				'label' => __d('croogo', 'Key'),
+				'value' => $key,
+			),
+			'value' => array(
+				'label' => __d('croogo', 'Value'),
+				'value' => $value,
+				'type' => 'textarea',
+				'rows' => 2,
+			),
+		);
+		if ($inputClass) {
+			$_options['key']['class'] = $_options['value']['class'] = $inputClass;
+		}
+		$options = Hash::merge($_options, $options);
+		$uuid = String::uuid();
 
-        $fields = '';
-        if ($id != null) {
-            $fields .= $this->Form->input('Meta.' . $uuid . '.id', array('type' => 'hidden', 'value' => $id));
-            $this->Form->unlockField('Meta.' . $uuid . '.id');
-        }
-        $fields .= $this->Form->input('Meta.' . $uuid . '.key', $options['key']);
-        $fields .= $this->Form->input('Meta.' . $uuid . '.value', $options['value']);
-        $this->Form->unlockField('Meta.' . $uuid . '.key');
-        $this->Form->unlockField('Meta.' . $uuid . '.value');
-        $fields = $this->Html->tag('div', $fields, array('class' => 'fields'));
+		$fields = '';
+		if ($id != null) {
+			$fields .= $this->Form->input('Meta.' . $uuid . '.id', array('type' => 'hidden', 'value' => $id));
+			$this->Form->unlockField('Meta.' . $uuid . '.id');
+		}
+		$fields .= $this->Form->input('Meta.' . $uuid . '.key', $options['key']);
+		$fields .= $this->Form->input('Meta.' . $uuid . '.value', $options['value']);
+		$this->Form->unlockField('Meta.' . $uuid . '.key');
+		$this->Form->unlockField('Meta.' . $uuid . '.value');
+		$fields = $this->Html->tag('div', $fields, array('class' => 'fields'));
 
-        $id = is_null($id) ? $uuid : $id;
-        $deleteUrl = $this->settings['deleteUrl'];
-        $deleteUrl[] = $id;
-        $actions = $this->Html->link(
-            __d('croogo', 'Remove'),
-            $deleteUrl,
-            array('class' => 'remove-meta', 'rel' => $id)
-        );
-        $actions = $this->Html->tag('div', $actions, array('class' => 'actions'));
+		$id = is_null($id) ? $uuid : $id;
+		$deleteUrl = $this->settings['deleteUrl'];
+		$deleteUrl[] = $id;
+		$actions = $this->Html->link(
+			__d('croogo', 'Remove'),
+			$deleteUrl,
+			array('class' => 'remove-meta', 'rel' => $id)
+		);
+		$actions = $this->Html->tag('div', $actions, array('class' => 'actions'));
 
-        $output = $this->Html->tag('div', $actions . $fields, array('class' => 'meta'));
-        return $output;
-    }
+		$output = $this->Html->tag('div', $actions . $fields, array('class' => 'meta'));
+		return $output;
+	}
 
 
 

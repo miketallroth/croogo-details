@@ -26,11 +26,11 @@ class DetailTypeBehavior extends ModelBehavior {
 	 */
 	public function setup(Model $model, $config = Array()) {
 		if (is_string($config)) {
-				$config = array($config);
+			$config = array($config);
 		}
 		$this->settings[$model->alias] = $config;
-            Configure::write('Cache.disable',true);
-            clearCache(null, 'models', null);
+			Configure::write('Cache.disable',true);
+			clearCache(null, 'models', null);
 	}
 
 	/**
@@ -40,8 +40,8 @@ class DetailTypeBehavior extends ModelBehavior {
 	 * associated table exists.
 	 */
 	public function afterSave(Model $Model, $created, $options = array()) {
-            CakeLog::write('debug','in DTB afterSave');
-            CakeLog::write('debug',print_r($Model->name,true));
+			CakeLog::write('debug','in DTB afterSave');
+			CakeLog::write('debug',print_r($Model->name,true));
 
 		// simplify model params
 		$Model->data['Params'] = $Model->Behaviors->Params->paramsToArray($Model,
@@ -49,7 +49,7 @@ class DetailTypeBehavior extends ModelBehavior {
 
 		if (isset($Model->data['Params']['detail']) && $Model->data['Params']['detail']) {
 			$alias = $Model->data['Type']['alias'];
-            CakeLog::write('debug','found the detail ' . $alias);
+			CakeLog::write('debug','found the detail ' . $alias);
 			$detailModelName = Inflector::classify($alias) . 'Detail';
 			$tableName = Inflector::tableize($detailModelName);
 
@@ -60,17 +60,17 @@ class DetailTypeBehavior extends ModelBehavior {
 					'key' => 'Details.hookTypes',
 				),
 			));
-            if (strlen($setting['Setting']['value']) > 0) {
-			    $hookTypes = explode(',',$setting['Setting']['value']);
-            } else {
-                $hookTypes = array();
-            }
+			if (strlen($setting['Setting']['value']) > 0) {
+				$hookTypes = explode(',',$setting['Setting']['value']);
+			} else {
+				$hookTypes = array();
+			}
 
-            CakeLog::write('debug',print_r($hookTypes,true));
+			CakeLog::write('debug',print_r($hookTypes,true));
 			if (!in_array($alias,$hookTypes)) {
-            CakeLog::write('debug','missing from settings ' . $alias);
+			CakeLog::write('debug','missing from settings ' . $alias);
 				$hookTypes[] = $alias;
-            CakeLog::write('debug',print_r($hookTypes,true));
+			CakeLog::write('debug',print_r($hookTypes,true));
 				$setting['Setting']['value'] = implode(',',$hookTypes);
 				$Setting->save($setting);
 			}
@@ -82,37 +82,37 @@ class DetailTypeBehavior extends ModelBehavior {
 				"from INFORMATION_SCHEMA.TABLES ".
 				"where TABLE_SCHEMA='{$dbName}'"
 			);
-            //CakeLog::write('debug',print_r($CMC,true));
-            Configure::write('Cache.disable',true);
-            clearCache(null, 'models', null);
+			//CakeLog::write('debug',print_r($CMC,true));
+			Configure::write('Cache.disable',true);
+			clearCache(null, 'models', null);
 			$tables = Hash::extract($tables, '{n}.TABLES.TABLE_NAME');
 			if (!in_array($tableName, $tables)) {
-            CakeLog::write('debug','missing from database ' . $alias);
+			CakeLog::write('debug','missing from database ' . $alias);
 				$Model->query(
 					"create table {$tableName} (".
 					"`id` int(10) not null auto_increment, ".
 					"`node_id` int(10) default null, ".
 					"primary key (`id`))"
 				);
-            /*
-		        $DM = ClassRegistry::init($detailModelName);
-                $DM->getDataSource()->cacheSources = false;
-		        ClassRegistry::flush();
-                Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
-                    'className' => $detailModelName,
-                    'foreignKey' => 'node_id',
-                    'dependent' => true,
-                )));
-             */
-            $tempDs = $Model->getDataSource()->config;
-            CakeLog::write('debug',print_r($tempDs,true));
-            $CMC = ConnectionManager::$config;
-            ConnectionManager::$config->detailstemp = $tempDs;
-            CakeLog::write('debug',print_r($CMC,true));
-            //Configure::write('Cache.disable',true);
-            //clearCache(null, 'models', null);
-	        $DM = ClassRegistry::init($detailModelName);
-            $DM->setDataSource('detailstemp');
+			/*
+				$DM = ClassRegistry::init($detailModelName);
+				$DM->getDataSource()->cacheSources = false;
+				ClassRegistry::flush();
+				Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
+					'className' => $detailModelName,
+					'foreignKey' => 'node_id',
+					'dependent' => true,
+				)));
+			 */
+			$tempDs = $Model->getDataSource()->config;
+			CakeLog::write('debug',print_r($tempDs,true));
+			$CMC = ConnectionManager::$config;
+			ConnectionManager::$config->detailstemp = $tempDs;
+			CakeLog::write('debug',print_r($CMC,true));
+			//Configure::write('Cache.disable',true);
+			//clearCache(null, 'models', null);
+			$DM = ClassRegistry::init($detailModelName);
+			$DM->setDataSource('detailstemp');
 
 			}
 		}
