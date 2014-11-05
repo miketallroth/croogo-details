@@ -12,6 +12,8 @@ class DetailsUtility extends Object {
 	 * numeric as appropriate. Strings of 'true', 'yes', 'on'
 	 * get converted to boolean true. Strings of 'false', 'no',
 	 * 'off' get converted to boolean false.
+     *
+     * Should be unnecessary in Croogo 2.2.0+
 	 */
 	static public function convertTypes($params = array()) {
 
