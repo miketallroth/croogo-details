@@ -1,62 +1,18 @@
 <?php
-	// TODO find type info from params field
 
-
-	$route = 'appointments';
-	$plugin = strtolower('Nodes');
-	$controller = strtolower('Nodes');
-
-	CroogoRouter::connect("/{$route}", array('plugin' => $plugin, 'controller' => $controller, 'action' => 'index', 'type' => 'appointment'));
-
-
-/*
-	$types = ClassRegistry::init('Taxonomy.Type')->find('all', array(
-		'cache' => array(
-			'name' => 'types',
-			'config' => 'croogo_types',
-		),
-	));
-
-	$alias = '';
-	$base_model_name = '';
-	$model_name = '';
-	$route = '';
-
-	$types = array(
-		array(
-			'Params' => array(
-				'detail' => true,
-				'plugin' => false,
-				'model' => 'ApptDetail',
-				'controller' => 'ApptsController',
-				'helper' => 'Appts',
-
-
-
-
-
-	foreach ($types as $type) {
-		$p = $type['Params'];
+	// routes=true in the content type's params field automatically hooks
+	// the singular version of the content type to the index.
+	// Here, we hook the pluralized version of the content type to the index
+	$typeDefs = Configure::read('Details.typeDefs');
+	foreach ($typeDefs as $typeDef) {
+		$p = $typeDef['Params'];
 		if (isset($p['detail']) && $p['detail']) {
-			if (isset($p['model']) && $p['model']) {
-				if (strpos($p['model']
-				$root_model_name = $p['model'];
-			} else {
-				$root_model_name = Inflector::classify($type['Type']['alias']);
-			}
-			$route = (isset($p['route']) && $p['route']) ? $p['route'] : Inflector::pluralize($root_model_name);
-			$plugin = (isset($p['plugin'])) ?  $p['plugin'] : 'test';
+			$route = Inflector::pluralize($typeDef['Type']['alias']);
+			CroogoRouter::connect("/{$route}", array(
+				'plugin' => 'nodes',
+				'controller' => 'nodes',
+				'action' =>  'index',
+				'type' => $typeDef['Type']['alias'],
+			));
 		}
-		CroogoRouter::connect("/{$route}", array('plugin' => $plugin, 'controller' => $controller, 'action' => 'index'));
 	}
-
-
-
-	$model = 'ApptDetail';
-	$route = 'appts';
-
- */
-
-	// let's do just this first one
-	//CroogoRouter::connect('/events', array('plugin' => 'event', 'controller' => 'events', 'action' => 'index'));
-	//CroogoRouter::connect('/events/calendar', array('plugin' => 'event', 'controller' => 'events', 'action' => 'calendar'));

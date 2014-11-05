@@ -45,6 +45,7 @@
 		'priority' => 1,
 	));
 	 */
+	Configure::write('Details.typeDefs',$typeDefs);
 
 /**
  * hasOne relationship
