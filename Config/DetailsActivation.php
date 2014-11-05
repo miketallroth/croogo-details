@@ -11,9 +11,9 @@
  */
 class DetailsActivation {
 
-	const TABLES_CONFIG_OPTION = 'Details.tables';
-	const TABLES_TITLE = 'Details Tables';
-	const TABLES_DESC = 'Details tables existing in database';
+	const TABLES_CONFIG_OPTION = 'Details.hookTypes';
+	const TABLES_TITLE = 'Details Content Types';
+	const TABLES_DESC = 'Details content types to be hooked';
 
 	public function beforeActivation(Controller $controller) {
 		return true;
