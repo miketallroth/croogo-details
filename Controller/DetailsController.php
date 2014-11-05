@@ -38,6 +38,14 @@ class DetailsController extends DetailsAppController {
  */
 	public $presetVars = true;
 
+
+
+    public function beforeFilter() {
+        Configure::write('Cache.disable', true);
+        clearCache(null, 'models', null);
+        parent::beforeFilter();
+    }
+
 /**
  * Admin add field
  *
@@ -48,6 +56,7 @@ class DetailsController extends DetailsAppController {
         $this->set('title_for_layout', __d('croogo', 'Add Field'));
 
 		// set the redirect array
+		//$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId, '?' => uniqid());
 		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
 
 		// check for invalid typeId
@@ -61,12 +70,26 @@ class DetailsController extends DetailsAppController {
 
 		if (!empty($this->request->data)) {
 
+            $colName = Inflector::slug(strtolower($this->request->data['Type']['name']));
 			$colDef = $this->_makeSqlDef($this->request->data['Type']);
-			$Detail->query("ALTER TABLE {$tableName} ADD {$this->request->data['Type']['name']} {$colDef}");
+			$Detail->query("ALTER TABLE {$tableName} ADD {$colName} {$colDef}");
+
+            //
+            $tempDs = $Detail->getDataSource()->config;
+            CakeLog::write('debug',print_r($tempDs,true));
+            $CMC = ConnectionManager::$config;
+            ConnectionManager::$config->detailstemp = $tempDs;
+            CakeLog::write('debug',print_r($CMC,true));
+            clearCache(null, 'models', null);
+            $DM = ClassRegistry::init($className);
+            $DM->setDataSource('detailstemp');
+            //
 
 			$this->Session->setFlash(__d('croogo', 'The Detail Field has been added'), 'flash', array('class' => 'success'));
-			$this->redirect(array('plugin'=>'taxonomy', 'controller'=>'types', 'action' => 'edit', $typeId));
-		}
+			$this->redirect($redir);
+            //$this->set('redir',true);
+            //$this->response->header('Location', 'http://localhost/slagit/admin/taxonomy/types/edit/8?'.uniqid());
+        }
 
 		$this->set('typeName', $typeName);
 		$this->set('typeId', $typeId);
@@ -96,12 +119,23 @@ class DetailsController extends DetailsAppController {
 
 		if (!empty($this->request->data)) {
 			$old_name = $name;
-			$new_name = $this->request->data['Type']['name'];
+			$new_name = Inflector::slug(strtolower($this->request->data['Type']['name']));
 			$colDef = $this->_makeSqlDef($this->request->data['Type']);
 
 			$query = "ALTER TABLE {$tableName} CHANGE {$old_name} {$new_name} {$colDef}";
 			CakeLog::write('debug',$query);
 			$Detail->query("ALTER TABLE {$tableName} CHANGE {$old_name} {$new_name} {$colDef}");
+
+            //
+            $tempDs = $Detail->getDataSource()->config;
+            CakeLog::write('debug',print_r($tempDs,true));
+            $CMC = ConnectionManager::$config;
+            ConnectionManager::$config->detailstemp = $tempDs;
+            CakeLog::write('debug',print_r($CMC,true));
+            clearCache(null, 'models', null);
+            $DM = ClassRegistry::init($className);
+            $DM->setDataSource('detailstemp');
+            //
 
 			$this->Session->setFlash(__d('croogo', 'The Detail Field has been changed'), 'flash', array('class' => 'success'));
 			$this->redirect(array('plugin'=>'taxonomy', 'controller'=>'types', 'action' => 'edit', $typeId));
@@ -165,6 +199,17 @@ class DetailsController extends DetailsAppController {
 			AFTER {$map[$name]}
 		");
 
+            //
+            $tempDs = $Detail->getDataSource()->config;
+            CakeLog::write('debug',print_r($tempDs,true));
+            $CMC = ConnectionManager::$config;
+            ConnectionManager::$config->detailstemp = $tempDs;
+            CakeLog::write('debug',print_r($CMC,true));
+            clearCache(null, 'models', null);
+            $DM = ClassRegistry::init($className);
+            $DM->setDataSource('detailstemp');
+            //
+
 		$this->Session->setFlash(__d('croogo', 'Field moved'), 'flash', array('class' => 'success'));
 		$this->redirect($redir);
 	}
@@ -220,6 +265,17 @@ class DetailsController extends DetailsAppController {
 			AFTER {$map[$name]}
 		");
 
+            //
+            $tempDs = $Detail->getDataSource()->config;
+            CakeLog::write('debug',print_r($tempDs,true));
+            $CMC = ConnectionManager::$config;
+            ConnectionManager::$config->detailstemp = $tempDs;
+            CakeLog::write('debug',print_r($CMC,true));
+            clearCache(null, 'models', null);
+            $DM = ClassRegistry::init($className);
+            $DM->setDataSource('detailstemp');
+            //
+
 		$this->Session->setFlash(__d('croogo', 'Field moved'), 'flash', array('class' => 'success'));
 		$this->redirect($redir);
 	}
@@ -252,6 +308,18 @@ class DetailsController extends DetailsAppController {
 		}
 
 		$Detail->query("ALTER TABLE {$tableName} DROP {$name}");
+
+            //
+            $tempDs = $Detail->getDataSource()->config;
+            CakeLog::write('debug',print_r($tempDs,true));
+            $CMC = ConnectionManager::$config;
+            ConnectionManager::$config->detailstemp = $tempDs;
+            CakeLog::write('debug',print_r($CMC,true));
+            clearCache(null, 'models', null);
+            $DM = ClassRegistry::init($className);
+            $DM->setDataSource('detailstemp');
+            //
+
         $this->Session->setFlash(__d('croogo', 'Field deleted'), 'flash', array('class' => 'success'));
         return $this->redirect($redir);
     }
@@ -287,20 +355,34 @@ class DetailsController extends DetailsAppController {
 	 * @return string sql def string
 	 */
 	function _makeSqlDef($meta) {
+        $type = $default = '';
 		switch ($meta['type']) {
 		case 'integer':
-			$meta['type'] = "integer({$meta['length']})";
-			$meta['type'] .= ($meta['unsigned']) ? ' unsigned' : '';
+            $length = empty($meta['length']) ? 11 : $meta['length'];
+			$type = "integer({$length})";
+			$type .= ($meta['unsigned']) ? ' unsigned' : '';
+            $default = empty($meta['default']) ? 0 : $meta['default'];
 			break;
+        case 'string':
+            $length = empty($meta['length']) ? 255 : $meta['length'];
+            $type = "varchar({$length})";
+            $default = empty($meta['default']) ? "''" : "'{$meta['default']}'";
+            break;
 		case 'datetime':
+            $type = 'datetime';
+            $default = empty($meta['default']) ? 0 : "'{$meta['default']}'";
 			break;
 		default:
+            $type = $meta['type'];
+            $default = empty($default) ? '' : $default;
 		}
 
-		$def = $meta['type'];
-		$def .= ($meta['null']) ? ' null' : ' not null';
-		$def .= ' default ' . ($meta['default'] === 'null') ? ' null' : "'{$meta['default']}'";
+        $null = ($meta['null']) ? 'null' : 'not null';
+        $default = empty($default) ? '' : "default {$default}";
 
+		$def = "{$type} {$null} {$default}";
+
+        CakeLog::write('debug',$def);
 		return $def;
 	}
 
