@@ -29,25 +29,24 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
 
 ## Usage
 
-  * Process
-    * Create a content type of your choosing, ie:
-      * title='Appointment',
-      * alias='appointment',
-      * Params tab
-        * routes=true
-    * Click Apply
-    * Edit your new content type and find the Details tab under the Publishing tab
-      * Click "Enable details"
-      * Add fields as desired, ie:
-        * start_date, datetime
-        * end_date, datetime
-    * Click on "Content" in the breadcrumb trail.
-    * Create a new Node of your type, ie. Appointment
-      * Give it a title, and a body, mark it Published.
-      * On Details tab, enter custom data.
-      * Save the Node.
-    * Navigate to your custom type list, ie. http://my-site.com/appointment
-      * This type route should show a list of your content of this type with your custom fields.
+  * Create a content type of your choosing, ie:
+    * title='Appointment',
+    * alias='appointment',
+    * Params tab
+      * routes=true
+  * Click Apply
+  * Edit your new content type and find the Details tab under the Publishing tab
+    * Click "Enable details"
+    * Add fields as desired, ie:
+      * start_date, datetime
+      * end_date, datetime
+  * Click on "Content" in the breadcrumb trail.
+  * Create a new Node of your type, ie. Appointment
+    * Give it a title, and a body, mark it Published.
+    * On Details tab, enter custom data.
+    * Save the Node.
+  * Navigate to your custom type list, ie. http://my-site.com/appointment
+    * This type route should show a list of your content of this type with your custom fields.
 
 ## Todo
 
