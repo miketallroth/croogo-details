@@ -1,35 +1,39 @@
 <?php
 
-/**
- * Get all types to search for types with Detail
- */
-	$typeDefs = ClassRegistry::init('Taxonomy.Type')->find('all');
+App::uses('DetailsUtility','Details.Lib');
 
-/**
- * Routes
- *
- * Plugin/Details/Config/routes.php will be loaded
- */
-	Croogo::hookRoutes('Details');
 
 /**
  * Behavior
  *
  * Behavior "contains" the associated models so they don't get removed.
- * Use priority 1 so this behavior runs before Containable.
+ * Use priority 1 so this behavior runs before Containable. Need to
+ * have behaviors loaded first since we use Taxonomy.Type immediately.
  */
 	Croogo::hookBehavior('Node', 'Details.Detail', array(
 		'priority' => 1,
 	));
+	Croogo::hookBehavior('Type', 'Details.DetailType', array('priority'=>1));
+
+/**
+ * Get all types to search for types with Detail
+ */
+	$Type = ClassRegistry::init('Taxonomy.Type');
+	$Utility = new DetailsUtility();
+	$typeDefs = $Type->find('all');
+	foreach ($typeDefs as $index => $typeDef) {
+		$typeDef['Params'] = $Utility::convertTypes($typeDef['Params']);
+	}
+	Configure::write('Details.typeDefs',$typeDefs);
 
 /**
  * hasOne relationship
  *
- * Now, Node hasOne Appt. Dependent so deletes work.
+ * Now, Node hasOne <model>Detail. Dependent so deletes work.
  */
 	foreach ($typeDefs as $typeDef) {
 		$p = $typeDef['Params'];
-		if (isset($p['detail'])) {
+		if (isset($p['detail']) && $p['detail']) {
 			$detailModelName = Inflector::classify($typeDef['Type']['alias']) . 'Detail';
 			Croogo::hookModelProperty('Node', 'hasOne', array($detailModelName => array(
 				'className' => $detailModelName,
@@ -56,12 +60,10 @@
 	$types = array();
 	foreach ($typeDefs as $typeDef) {
 		$p = $typeDef['Params'];
-		if (isset($p['detail'])) {
+		if (isset($p['detail']) && $p['detail']) {
 			$types[] = $typeDef['Type']['alias'];
 		}
 	}
 	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 	Croogo::hookAdminTab('Nodes/admin_edit', 'Details', 'Details.admin_tab_node', array('type'=>$types));
-
-	Croogo::hookAdminTab('Types/admin_add', 'Details', 'Details.admin_tab_type_add');
-	Croogo::hookAdminTab('Types/admin_edit', 'Details', 'Details.admin_tab_type');
+	Croogo::hookAdminBox('Types/admin_edit', 'Details', 'Details.admin_box_type');

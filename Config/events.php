@@ -4,9 +4,9 @@
 // TODO create a setting so you can enable/disable default DetailsHelperEventHandler data formatting.
 
 $config = array(
-    'EventHandlers' => array(
-        'Details.DetailsEventHandler' => array(
-            'priority' => 20,
-        ),
-    ),
+	'EventHandlers' => array(
+		'Details.DetailsEventHandler' => array(
+			'priority' => 20,
+		),
+	),
 );

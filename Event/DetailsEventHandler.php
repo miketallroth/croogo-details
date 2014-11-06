@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
+App::uses('DetailsUtility', 'Details.Lib');
 
 /**
  * Details Event Handler
@@ -63,10 +64,11 @@ class DetailsEventHandler implements CakeEventListener {
 			),
 		));
 
-		$p = $typeDef['Params'];
+		$typeDef['Params'] = DetailsUtility::convertTypes($typeDef['Params']);
+		$p = (isset($typeDef['Params']['detail'])) ? $typeDef['Params']['detail'] : false;
 
 		// Do nothing if this is not a Detail type
-		if (!array_key_exists('detail',$p) || !$p['detail']) {
+		if (!$p) {
 			return;
 		}
 
