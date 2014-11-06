@@ -33,4 +33,11 @@ class DetailsUtility extends Object {
 
 	}
 
+	static public function resetSource($Model, $detailModelName) {
+		$tempDs = $Model->getDataSource()->config;
+		ConnectionManager::$config->detailstemp = $tempDs;
+		clearCache(null, 'models', null);
+		$DM = ClassRegistry::init($detailModelName);
+		$DM->setDataSource('detailstemp');
+	}
 }

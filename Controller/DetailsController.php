@@ -1,6 +1,7 @@
 <?php
 
 App::uses('DetailsAppController', 'Details.Controller');
+App::uses('DetailsUtility', 'Details.Lib');
 
 /**
  * Details Controller
@@ -11,6 +12,10 @@ App::uses('DetailsAppController', 'Details.Controller');
  * @link     http://github.com/miketallroth/croogo-details
  */
 class DetailsController extends DetailsAppController {
+
+	public $uses = array(
+		'Taxonomy.Type',
+	);
 
 /**
  * Components
@@ -56,7 +61,6 @@ class DetailsController extends DetailsAppController {
 		$this->set('title_for_layout', __d('croogo', 'Add Field'));
 
 		// set the redirect array
-		//$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId, '?' => uniqid());
 		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
 
 		// check for invalid typeId
@@ -74,21 +78,10 @@ class DetailsController extends DetailsAppController {
 			$colDef = $this->_makeSqlDef($this->request->data['Type']);
 			$Detail->query("ALTER TABLE {$tableName} ADD {$colName} {$colDef}");
 
-			//
-			$tempDs = $Detail->getDataSource()->config;
-			CakeLog::write('debug',print_r($tempDs,true));
-			$CMC = ConnectionManager::$config;
-			ConnectionManager::$config->detailstemp = $tempDs;
-			CakeLog::write('debug',print_r($CMC,true));
-			clearCache(null, 'models', null);
-			$DM = ClassRegistry::init($className);
-			$DM->setDataSource('detailstemp');
-			//
+			DetailsUtility::resetSource($Detail, $className);
 
 			$this->Session->setFlash(__d('croogo', 'The Detail Field has been added'), 'flash', array('class' => 'success'));
 			$this->redirect($redir);
-			//$this->set('redir',true);
-			//$this->response->header('Location', 'http://localhost/slagit/admin/taxonomy/types/edit/8?'.uniqid());
 		}
 
 		$this->set('typeName', $typeName);
@@ -115,7 +108,6 @@ class DetailsController extends DetailsAppController {
 
 		// get the type meta data
 		list($Detail, $typeName, $className, $tableName, $detailFields) = $this->_getTypeInfo($typeId);
-		CakeLog::write('debug',print_r($detailFields,true));
 
 		if (!empty($this->request->data)) {
 			$old_name = $name;
@@ -123,19 +115,9 @@ class DetailsController extends DetailsAppController {
 			$colDef = $this->_makeSqlDef($this->request->data['Type']);
 
 			$query = "ALTER TABLE {$tableName} CHANGE {$old_name} {$new_name} {$colDef}";
-			CakeLog::write('debug',$query);
 			$Detail->query("ALTER TABLE {$tableName} CHANGE {$old_name} {$new_name} {$colDef}");
 
-			//
-			$tempDs = $Detail->getDataSource()->config;
-			CakeLog::write('debug',print_r($tempDs,true));
-			$CMC = ConnectionManager::$config;
-			ConnectionManager::$config->detailstemp = $tempDs;
-			CakeLog::write('debug',print_r($CMC,true));
-			clearCache(null, 'models', null);
-			$DM = ClassRegistry::init($className);
-			$DM->setDataSource('detailstemp');
-			//
+			DetailsUtility::resetSource($Detail, $className);
 
 			$this->Session->setFlash(__d('croogo', 'The Detail Field has been changed'), 'flash', array('class' => 'success'));
 			$this->redirect(array('plugin'=>'taxonomy', 'controller'=>'types', 'action' => 'edit', $typeId));
@@ -199,16 +181,7 @@ class DetailsController extends DetailsAppController {
 			AFTER {$map[$name]}
 		");
 
-			//
-			$tempDs = $Detail->getDataSource()->config;
-			CakeLog::write('debug',print_r($tempDs,true));
-			$CMC = ConnectionManager::$config;
-			ConnectionManager::$config->detailstemp = $tempDs;
-			CakeLog::write('debug',print_r($CMC,true));
-			clearCache(null, 'models', null);
-			$DM = ClassRegistry::init($className);
-			$DM->setDataSource('detailstemp');
-			//
+		DetailsUtility::resetSource($Detail, $className);
 
 		$this->Session->setFlash(__d('croogo', 'Field moved'), 'flash', array('class' => 'success'));
 		$this->redirect($redir);
@@ -265,16 +238,7 @@ class DetailsController extends DetailsAppController {
 			AFTER {$map[$name]}
 		");
 
-			//
-			$tempDs = $Detail->getDataSource()->config;
-			CakeLog::write('debug',print_r($tempDs,true));
-			$CMC = ConnectionManager::$config;
-			ConnectionManager::$config->detailstemp = $tempDs;
-			CakeLog::write('debug',print_r($CMC,true));
-			clearCache(null, 'models', null);
-			$DM = ClassRegistry::init($className);
-			$DM->setDataSource('detailstemp');
-			//
+		DetailsUtility::resetSource($Detail, $className);
 
 		$this->Session->setFlash(__d('croogo', 'Field moved'), 'flash', array('class' => 'success'));
 		$this->redirect($redir);
@@ -309,16 +273,7 @@ class DetailsController extends DetailsAppController {
 
 		$Detail->query("ALTER TABLE {$tableName} DROP {$name}");
 
-			//
-			$tempDs = $Detail->getDataSource()->config;
-			CakeLog::write('debug',print_r($tempDs,true));
-			$CMC = ConnectionManager::$config;
-			ConnectionManager::$config->detailstemp = $tempDs;
-			CakeLog::write('debug',print_r($CMC,true));
-			clearCache(null, 'models', null);
-			$DM = ClassRegistry::init($className);
-			$DM->setDataSource('detailstemp');
-			//
+		DetailsUtility::resetSource($Detail, $className);
 
 		$this->Session->setFlash(__d('croogo', 'Field deleted'), 'flash', array('class' => 'success'));
 		return $this->redirect($redir);
@@ -382,7 +337,6 @@ class DetailsController extends DetailsAppController {
 
 		$def = "{$type} {$null} {$default}";
 
-		CakeLog::write('debug',$def);
 		return $def;
 	}
 
