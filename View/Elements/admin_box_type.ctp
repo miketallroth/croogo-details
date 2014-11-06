@@ -5,6 +5,8 @@
 	$t = isset($d['Type']['alias']) ? $d['Type']['alias'] : false;
 	$p = isset($d['Params']['detail']) ? $d['Params']['detail'] : false;
 
+	$typeId = $d['Type']['id'];
+
 	if ($t && $p) {
 		$detailModelName = Inflector::classify($t) . 'Detail';
 		try {
@@ -12,7 +14,6 @@
 		} catch (MissingTableException $e) {
 			$detailFields = null;
 		}
-		$typeId = $d['Type']['id'];
 
 		$jsReady = '';
 
@@ -74,6 +75,18 @@
 				array('plugin'=>'details', 'controller'=>'details', 'action'=>'add', $typeId),
 				array('class'=>'add')
 			);
+			echo $this->Html->link(
+				__d('croogo','Disable details'),
+				array('plugin'=>'details', 'controller'=>'details', 'action'=>'toggle', $typeId, 'off'),
+				array('class'=>'delete', 'style'=>'float:right;')
+			);
 		}
+	} else {
+		echo '&nbsp;';
+		echo $this->Html->link(
+			__d('croogo','Enable details'),
+			array('plugin'=>'details', 'controller'=>'details', 'action'=>'toggle', $typeId, 'on'),
+			array('class'=>'delete', 'style'=>'float:right;')
+		);
 	}
 ?>

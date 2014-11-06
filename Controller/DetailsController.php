@@ -279,6 +279,56 @@ class DetailsController extends DetailsAppController {
 		return $this->redirect($redir);
 	}
 
+/**
+ * Admin toggle
+ *
+ * @param integer $id
+ * @param string $state on to enable, off to disable
+ * @return void
+ * @access public
+ */
+	public function admin_toggle($typeId = null, $state = 'off') {
+
+		// set the redirect array
+		$redir = array('plugin' => 'taxonomy', 'controller' => 'types', 'action' => 'edit', $typeId);
+
+		// check for invalid typeId
+		if (empty($typeId)) {
+			$this->Session->setFlash(__d('croogo', 'Type not recognized'), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
+
+		$type = $this->Type->find('first',array(
+			'conditions' => array(
+				'Type.id' => $typeId,
+			),
+		));
+		$params = explode("\n",$type['Type']['params']);
+		$found = false;
+		$insert = ($state === 'on') ? 'detail=true' : 'detail=false';
+		foreach ($params as $key => $value) {
+			if (strpos($value,'detail=') === 0) {
+				$params[$key] = $insert;
+				$found = true;
+				break;
+			}
+		}
+		if (!$found) {
+			$params[] = $insert;
+		}
+		$type['Type']['params'] = implode("\n",$params);
+		$success = $this->Type->save($type);
+
+		$status = ($state === 'on') ? 'enabled' : 'disabled';
+		if ($success) {
+			$this->Session->setFlash(__d('croogo', "Type {$status}"), 'flash', array('class' => 'success'));
+			return $this->redirect($redir);
+		} else {
+			$this->Session->setFlash(__d('croogo', "Type not {$status}. Please try again."), 'flash', array('class' => 'error'));
+			return $this->redirect($redir);
+		}
+	}
+
 
 	/**
 	 * _getTypeInfo
