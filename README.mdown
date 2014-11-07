@@ -52,7 +52,7 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
 
   * Complete admin side
     * Handle custom models/views/controllers, etc
-    * Add setting to disable default Helper listener
+    * Add setting to disable default afterSetNode Event listener
   * Handle other types
     * Url, Email, etc.
     * Add customizable validation
