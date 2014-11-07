@@ -72,13 +72,13 @@ App::uses('DetailsUtility','Details.Lib');
  * Settings menu
  * Place this between Writing and Comment in Settings menu
  */
-CroogoNav::add('sidebar', 'settings.children.details', array(
-	'title' => 'Details',
-	'url' => array(
-		'admin' => true,
-		'plugin' => false,
-		'controller' => 'settings',
-		'action' => 'settings/prefix/Details',
-	),
-	'weight' => 50,
-));
+	CroogoNav::add('sidebar', 'settings.children.details', array(
+		'title' => 'Details',
+		'url' => array(
+			'admin' => true,
+			'plugin' => false,
+			'controller' => 'settings',
+			'action' => 'settings/prefix/Details',
+		),
+		'weight' => 50,
+	));
