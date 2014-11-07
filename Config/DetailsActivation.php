@@ -11,10 +11,6 @@
  */
 class DetailsActivation {
 
-	const TABLES_CONFIG_OPTION = 'Details.hookTypes';
-	const TABLES_TITLE = 'Details Content Types';
-	const TABLES_DESC = 'Details content types to be hooked';
-
 	public function beforeActivation(Controller $controller) {
 		return true;
 	}
@@ -22,14 +18,27 @@ class DetailsActivation {
 	public function onActivation(Controller $controller) {
 		$controller->Setting->create();
 		$controller->Setting->save(array(
-			'key' => self::TABLES_CONFIG_OPTION,
-			'value' => '',
-			'title' => self::TABLES_TITLE,
-			'description' => self::TABLES_DESC,
-			'input_type' => 'text',
-			'editable' => 1,
-			'weight' => 100,
-			'params' => '',
+			'key' =>         'Details.hookTypes',
+			'value' =>       '',
+			'title' =>       'Hook Content Types',
+			'description' => 'Content types activated with details',
+			'input_type' =>  'text',
+			'editable' =>    0,
+			'weight' =>      100,
+			'params' =>      '',
+		));
+
+		$controller->Setting->create();
+		$controller->Setting->save(array(
+			'key' =>         'Details.enableDefaultBodyUpdate',
+			'value' =>       true,
+			'title' =>       'Enable Default Body Update',
+			'description' => 'Inserts default formatted detail fields into node body '.
+								'(disable when using custom views)',
+			'input_type' =>  'checkbox',
+			'editable' =>    1,
+			'weight' =>      101,
+			'params' =>      '',
 		));
 	}
 

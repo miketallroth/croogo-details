@@ -67,3 +67,18 @@ App::uses('DetailsUtility','Details.Lib');
 	Croogo::hookAdminTab('Nodes/admin_add', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 	Croogo::hookAdminTab('Nodes/admin_edit', 'Details', 'Details.admin_tab_node', array('type'=>$types));
 	Croogo::hookAdminBox('Types/admin_edit', 'Details', 'Details.admin_box_type');
+
+/**
+ * Settings menu
+ * Place this between Writing and Comment in Settings menu
+ */
+CroogoNav::add('sidebar', 'settings.children.details', array(
+	'title' => 'Details',
+	'url' => array(
+		'admin' => true,
+		'plugin' => false,
+		'controller' => 'settings',
+		'action' => 'settings/prefix/Details',
+	),
+	'weight' => 50,
+));

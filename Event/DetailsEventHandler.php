@@ -56,6 +56,10 @@ class DetailsEventHandler implements CakeEventListener {
 	 */
 	public function afterSetNode($event) {
 
+		if (!Configure::read('Details.enableDefaultBodyUpdate')) {
+			return;
+		}
+
 		$Layout = $event->subject->Layout;
 		$type = $Layout->node('type');
 		$typeDef = ClassRegistry::init('Taxonomy.Type')->find('first', array(
