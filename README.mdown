@@ -27,6 +27,10 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
   * Go to Admin > Extensions > Plugins.
   * Click on the activate icon to enable it.
 
+## Example
+
+  * For an implemented example, please check out my [croogo-appointments](https://github.com/miketallroth/croogo-appointments) plugin which uses the Details plugin for the data handling, and implements the non-data pieces.
+
 ## Usage
 
   * Create a content type of your choosing, ie:
@@ -35,7 +39,7 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
     * Params tab
       * routes=true
   * Click Apply
-  * Edit your new content type and find the Details tab under the Publishing tab
+  * Edit your new content type and find the Details box under the Publishing box
     * Click "Enable details"
     * Add fields as desired, ie:
       * start_date, datetime
@@ -47,15 +51,6 @@ It is powered by the [Croogo](http://croogo.org) CMS framework.
     * Save the Node.
   * Navigate to your custom type list, ie. http://my-site.com/appointment
     * This type route should show a list of your content of this type with your custom fields.
-
-## Todo
-
-  * Complete admin side
-    * Handle custom models/views/controllers, etc
-    * Add setting to disable default afterSetNode Event listener
-  * Handle other types
-    * Url, Email, etc.
-    * Add customizable validation
 
 ## Links
 
