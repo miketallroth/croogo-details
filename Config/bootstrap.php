@@ -80,5 +80,5 @@ App::uses('DetailsUtility','Details.Lib');
 			'controller' => 'settings',
 			'action' => 'settings/prefix/Details',
 		),
-		'weight' => 50,
+		'weight' => 41,
 	));
