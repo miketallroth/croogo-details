@@ -17,6 +17,10 @@ class DetailsUtility extends Object {
 	 */
 	static public function convertTypes($params = array()) {
 
+		if (empty($params)) {
+			return array();
+		}
+
 		foreach ($params as $key => $value) {
 			if (is_string($value)) {
 				$num_check = filter_var($value, FILTER_VALIDATE_INT, array('flags'=>FILTER_FLAG_ALLOW_HEX));

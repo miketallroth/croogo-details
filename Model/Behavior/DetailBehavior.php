@@ -77,6 +77,10 @@ class DetailBehavior extends ModelBehavior {
 			),
 		));
 
+		if (empty($type)) {
+			return null;
+		}
+
 		$alias = null;
 		$type['Params'] = DetailsUtility::convertTypes($type['Params']);
 		$p = (isset($type['Params']['detail'])) ? $type['Params']['detail'] : false;
