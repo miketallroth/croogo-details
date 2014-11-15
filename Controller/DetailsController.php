@@ -362,6 +362,10 @@ class DetailsController extends DetailsAppController {
 	function _makeSqlDef($meta) {
 		$type = $default = '';
 		switch ($meta['type']) {
+		case 'boolean':
+			$type = "tinyint(1)";
+			$default = empty($meta['default']) ? 0 : $meta['default'];
+			break;
 		case 'integer':
 			$length = empty($meta['length']) ? 11 : $meta['length'];
 			$type = "integer({$length})";
