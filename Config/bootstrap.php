@@ -1,6 +1,7 @@
 <?php
 
 App::uses('DetailsUtility','Details.Lib');
+CakeLog::write('debug','in details bootstrap');
 
 
 /**
@@ -40,6 +41,7 @@ App::uses('DetailsUtility','Details.Lib');
 				'foreignKey' => 'node_id',
 				'dependent' => true,
 			)));
+            CakeLog::write('debug',"hooked {$detailModelName}");
 		}
 	}
 
@@ -47,6 +49,7 @@ App::uses('DetailsUtility','Details.Lib');
  * Helper
  *
  * Adjust output values prior to display.
+ * May need to change to '*' to hook to all controllers.
  */
 	Croogo::hookHelper('Nodes', 'Details.Details');
 
