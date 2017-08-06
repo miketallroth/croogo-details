@@ -46,20 +46,20 @@
 
 				echo $this->Croogo->adminRowAction('',
 					array('admin' => true, 'plugin' => 'details', 'controller' => 'details', 'action' => 'moveup', $typeId, $fieldName),
-					array('icon' => $_icons['move-up'], 'tooltip' => __d('croogo', 'Move up'))
+					array('icon' => $this->Theme->getIcon('move-up'), 'tooltip' => __d('croogo', 'Move up'))
 				);
 				echo $this->Croogo->adminRowAction('',
 					array('plugin' => 'details', 'controller' => 'details', 'action' => 'movedown', $typeId, $fieldName),
-					array('icon' => $_icons['move-down'], 'tooltip' => __d('croogo', 'Move down'))
+					array('icon' => $this->Theme->getIcon('move-down'), 'tooltip' => __d('croogo', 'Move down'))
 				);
 				echo $this->Croogo->adminRowAction('',
 					array('plugin' => 'details', 'controller' => 'details', 'action' => 'edit', $typeId, $fieldName),
-					array('icon' => $_icons['update'], 'tooltip' => __d('croogo', 'Edit this item'))
+					array('icon' => $this->Theme->getIcon('update'), 'tooltip' => __d('croogo', 'Edit this item'))
 				);
 				echo ' ' . $this->Croogo->adminRowAction('',
 					array('plugin' => 'details', 'controller' => 'details', 'action' => 'delete_field', $typeId, $fieldName),
 					array(
-						'icon' => $_icons['delete'],
+						'icon' => $this->Theme->getIcon('delete'),
 						'class' => 'delete',
 						'tooltip' => __d('croogo', 'Remove this item'),
 						'rowAction' => 'delete',
